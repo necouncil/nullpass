@@ -19,6 +19,8 @@ def _boot():
 
 _boot()
 
+sys.set_int_max_str_digits(8600) #Changing the integer to be bigger. default: 4300
+
 import tkinter as tk
 from tkinter import messagebox, filedialog
 import json, os, csv, secrets, string, time, math
@@ -627,7 +629,11 @@ class Vault:
             for row in csv.DictReader(f):
                 t=(row.get("title","") or row.get("name","") or row.get("Title","")).strip()
                 p=(row.get("password","") or row.get("Password","")).strip()
-                if not t: continue
+                if not t: #If there no title we can try to take the url and not to put backspace because in the program you just see cleard lines but you can choose, to not edit every title and adding our we take to url and put to title
+                    url = row.get("url","").strip()
+                    if url:
+                        t = url.split("//")[-1].split("/")[0]
+                if not t: continue #If we also can't find any title we can do a cleared line
                 tags=[x.strip() for x in row.get("tags","").split(",") if x.strip()]
                 self.add(
                     title=t,
